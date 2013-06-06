@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<extension key="be.muntpunt.press" type="module">
+  <file>press</file>
+  <name>Search on contact+org criteria</name>
+  <description>some of the criteria are for the contact, some for the user</description>
+  <license>agpl3</license>
+  <maintainer>
+    <author>xavier dutoit</author>
+    <email>xavier@tttp.eu</email>
+  </maintainer>
+  <releaseDate>2013-06-06</releaseDate>
+  <version>1.0</version>
+  <develStage>alpha</develStage>
+  <compatibility>
+    <ver>4.2</ver>
+  </compatibility>
+  <civix>
+    <namespace>CRM/Press</namespace>
+  </civix>
+</extension>
