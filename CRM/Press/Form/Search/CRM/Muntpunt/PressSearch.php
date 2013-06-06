@@ -17,6 +17,19 @@ class CRM_Press_Form_Search_CRM_Muntpunt_PressSearch extends CRM_Contact_Form_Se
   function buildForm(&$form) {
     CRM_Utils_System::setTitle(ts('Search for journalists'));
 
+    $result = civicrm_api('CustomField', 'getsingle', array('version' => 3,'name' =>"function"));
+    if($result["is_error"])
+      die ($result["error_message"]);
+
+    $group_id=$result["option_group_id"];
+    if (!$group_id) {
+      die ("can't find options for field $group");
+    }
+    $params = array ("version"=>3,"sequential"=>1,"option_group_id"=>$group_id);
+    $result= civicrm_api('OptionValue', 'get',array ("version"=>3,"sequential"=>1,"option_group_id"=>$group_id,"option.limit"=>100));
+
+print_r($result);
+die ("toto");
     $form->add('text',
       'household_name',
       ts('Household Name'),
@@ -75,7 +88,7 @@ class CRM_Press_Form_Search_CRM_Muntpunt_PressSearch extends CRM_Contact_Form_Se
    *
    * @return string, sql
    */
-  function all($offset = 0, $rowcount = 0, $sort = NULL, $includeContactIDs = FALSE) {
+  function all($offset = 0, $rowcount = 0, $sort = NULL, $includeContactIDs = FALSE, $justIDs = FALSE) {
     // delegate to $this->sql(), $this->select(), $this->from(), $this->where(), etc.
     return $this->sql($this->select(), $offset, $rowcount, $sort, $includeContactIDs, NULL);
   }
@@ -160,7 +173,7 @@ class CRM_Press_Form_Search_CRM_Muntpunt_PressSearch extends CRM_Contact_Form_Se
    * @return string, template path (findable through Smarty template path)
    */
   function templateFile() {
-    return 'CRM/Contact/Form/Search/Custom.tpl';
+    return 'CRM/Press/Form/Search/CRM/Muntpunt/PressSearch.tpl';
   }
 
   /**
