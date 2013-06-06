@@ -6,7 +6,7 @@
 class CRM_Press_Form_Search_CRM_Muntpunt_PressSearch extends CRM_Contact_Form_Search_Custom_Base implements CRM_Contact_Form_Search_Interface {
   function __construct(&$formValues) {
     $this->criteria = array('functions', 'teams','categories','frequencies','types');
-    $this->column = array('functions'=> "journalist.redactie_24", 'teams' => "journalist.team_31"
+    $this->column = array('functions'=> "journalist.function_32", 'teams' => "journalist.team_31"
       ,'categories'=>"media.categorie_33",'frequencies'=>"media.periodicitei_29",'types'=>"media.perssoort_14");
     parent::__construct($formValues);
   }
@@ -81,6 +81,7 @@ class CRM_Press_Form_Search_CRM_Muntpunt_PressSearch extends CRM_Contact_Form_Se
    */
   function all($offset = 0, $rowcount = 0, $sort = NULL, $includeContactIDs = FALSE, $justIDs = FALSE) {
     // delegate to $this->sql(), $this->select(), $this->from(), $this->where(), etc.
+//die ($this->sql($this->select(), $offset, $rowcount, $sort, $includeContactIDs, NULL));
     return $this->sql($this->select(), $offset, $rowcount, $sort, $includeContactIDs, NULL);
   }
 
@@ -163,7 +164,6 @@ class CRM_Press_Form_Search_CRM_Muntpunt_PressSearch extends CRM_Contact_Form_Se
     if (!empty($clause)) {
       $where .= ' AND ' . implode(' AND ', $clause);
     }
-//die ($where);
     return $this->whereClause($where, $params);
   }
 
