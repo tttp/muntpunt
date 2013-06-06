@@ -5,6 +5,9 @@
  */
 class CRM_Press_Form_Search_CRM_Muntpunt_PressSearch extends CRM_Contact_Form_Search_Custom_Base implements CRM_Contact_Form_Search_Interface {
   function __construct(&$formValues) {
+    $this->criteria = array('functions', 'teams','categories','frequencies','types');
+    $this->column = array('functions'=> "journalist.redactie_24", 'teams' => "journalist.team_31"
+      ,'categories'=>"media.categorie_33",'frequencies'=>"media.periodicitei_29",'types'=>"media.perssoort_14");
     parent::__construct($formValues);
   }
 
@@ -20,6 +23,8 @@ class CRM_Press_Form_Search_CRM_Muntpunt_PressSearch extends CRM_Contact_Form_Se
     $params = array ("version"=>3,"sequential"=>1,"option_group_id"=>$group_id,"is_active"=>1);
     $result= civicrm_api('OptionValue', 'get',array ("version"=>3,"sequential"=>1,"option_group_id"=>$group_id,"option.limit"=>100));
     $form->assign($tplname,$result["values"]);
+//    $form->addElement('hidden', "${tplname}[]", "");
+
   }
 
   /**
@@ -35,26 +40,7 @@ class CRM_Press_Form_Search_CRM_Muntpunt_PressSearch extends CRM_Contact_Form_Se
     $this->assignFilter($form,"categories","Categorie");
     $this->assignFilter($form,"frequencies","Periodicitei");
     $this->assignFilter($form,"types","Perssoort");
-    $form->add('text',
-      'household_name',
-      ts('Household Name'),
-      TRUE
-    );
-
-    $stateProvince = array('' => ts('- any state/province -')) + CRM_Core_PseudoConstant::stateProvince();
-    $form->addElement('select', 'state_province_id', ts('State/Province'), $stateProvince);
-
-    // Optionally define default search values
-    $form->setDefaults(array(
-      'household_name' => '',
-      'state_province_id' => NULL,
-    ));
-
-    /**
-     * if you are using the standard template, this array tells the template what elements
-     * are part of the search criteria
-     */
-    $form->assign('elements', array('household_name', 'state_province_id','function','team','categorie'));
+    $form->assign('elements', $this->criteria);
   }
 
   /**
@@ -79,11 +65,11 @@ class CRM_Press_Form_Search_CRM_Muntpunt_PressSearch extends CRM_Contact_Form_Se
    */
   function &columns() {
     // return by reference
+      //ts('Contact Id') => 'contact_id',
     $columns = array(
-      ts('Contact Id') => 'contact_id',
-      ts('Contact Type') => 'contact_type',
       ts('Name') => 'sort_name',
-      ts('State') => 'state_province',
+      ts('Job Title') => 'job_title',
+      ts('media') => 'current_employer',
     );
     return $columns;
   }
@@ -108,7 +94,8 @@ class CRM_Press_Form_Search_CRM_Muntpunt_PressSearch extends CRM_Contact_Form_Se
       contact_a.id           as contact_id  ,
       contact_a.contact_type as contact_type,
       contact_a.sort_name    as sort_name,
-      state_province.name    as state_province
+      contact_a.job_title    as job_title,
+      contact_a.organization_name    as current_employer
     ";
   }
 
@@ -120,55 +107,63 @@ class CRM_Press_Form_Search_CRM_Muntpunt_PressSearch extends CRM_Contact_Form_Se
   function from() {
     return "
       FROM      civicrm_contact contact_a
-      LEFT JOIN civicrm_address address ON ( address.contact_id       = contact_a.id AND
+        LEFT JOIN civicrm_value_media_info_12 journalist ON (contact_a.id = journalist.entity_id)
+        LEFT JOIN civicrm_value_diensten_en_producten_4 media ON (contact_a.employer_id = media.entity_id)
+      ";
+
+/*
+        LEFT JOIN civicrm_contact org ON (contact_a.employer_id = org.id)
+
+"      LEFT JOIN civicrm_address address ON ( address.contact_id       = contact_a.id AND
                                              address.is_primary       = 1 )
       LEFT JOIN civicrm_email           ON ( civicrm_email.contact_id = contact_a.id AND
                                              civicrm_email.is_primary = 1 )
       LEFT JOIN civicrm_state_province state_province ON state_province.id = address.state_province_id
     ";
+*/
   }
 
+  function getCriteria() {
+    foreach ($this->criteria as $key) {
+      $this->$key= array_keys($_POST[$key]);
+    //mysql_real_escape_string($this->$key);
+    } 
+  }
   /**
    * Construct a SQL WHERE clause
    *
    * @return string, sql fragment with conditional expressions
    */
   function where($includeContactIDs = FALSE) {
+    $this->getCriteria();
     $params = array();
-    $where = "contact_a.contact_type   = 'Household'";
+    $where = "contact_a.contact_type  = 'Individual'";
+    $where = "contact_a.contact_sub_type like '%Pers_Medewerker%'";
 
     $count  = 1;
     $clause = array();
-    $name   = CRM_Utils_Array::value('household_name',
-      $this->_formValues
-    );
-    if ($name != NULL) {
-      if (strpos($name, '%') === FALSE) {
-        $name = "%{$name}%";
+
+    foreach ($this->criteria as $section) {
+      if (!$this->$section) continue;
+      $t = array();
+      
+      foreach ($this->$section as $i) {
+        $t [] = $this->column[$section] . " LIKE '%". $i ."%'";
       }
+      $clause[] = " ( ". implode(" OR ",$t ). " ) ";
+      $params[$count] = array($this->$section, 'String');
+      $count++;
+  }
+
+/*
       $params[$count] = array($name, 'String');
       $clause[] = "contact_a.household_name LIKE %{$count}";
       $count++;
-    }
-
-    $state = CRM_Utils_Array::value('state_province_id',
-      $this->_formValues
-    );
-    if (!$state &&
-      $this->_stateID
-    ) {
-      $state = $this->_stateID;
-    }
-
-    if ($state) {
-      $params[$count] = array($state, 'Integer');
-      $clause[] = "state_province.id = %{$count}";
-    }
-
+*/
     if (!empty($clause)) {
       $where .= ' AND ' . implode(' AND ', $clause);
     }
-
+//die ($where);
     return $this->whereClause($where, $params);
   }
 
@@ -178,16 +173,7 @@ class CRM_Press_Form_Search_CRM_Muntpunt_PressSearch extends CRM_Contact_Form_Se
    * @return string, template path (findable through Smarty template path)
    */
   function templateFile() {
-    return 'CRM/Press/Form/Search/CRM/Muntpunt/PressSearch.tpl';
+   return 'CRM/Press/Form/Search/CRM/Muntpunt/PressSearch.tpl';
   }
 
-  /**
-   * Modify the content of each row
-   *
-   * @param array $row modifiable SQL result row
-   * @return void
-   */
-  function alterRow(&$row) {
-    $row['sort_name'] .= ' ( altered )';
-  }
 }
