@@ -6,13 +6,13 @@
 return array (
   0 => 
   array (
-    'name' => 'CRM_Press_Form_Search_CRM_Muntpunt_PressSearch',
+    'name' => 'Muntpunt press search',
     'entity' => 'CustomSearch',
     'params' => 
     array (
       'version' => 3,
       'label' => 'CRM_Muntpunt_PressSearch',
-      'description' => 'CRM_Muntpunt_PressSearch (be.muntpunt.press)',
+      'description' => 'use custom fields to filter the contacts',
       'class_name' => 'CRM_Press_Form_Search_CRM_Muntpunt_PressSearch',
     ),
   ),
