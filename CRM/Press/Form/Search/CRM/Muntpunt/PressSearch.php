@@ -10,6 +10,7 @@ class CRM_Press_Form_Search_CRM_Muntpunt_PressSearch extends CRM_Contact_Form_Se
       ,'categories'=>"media.categorie_33",'frequencies'=>"media.periodicitei_29",'types'=>"media.perssoort_14");
     parent::__construct($formValues);
     $this->formValues = $formValues;
+    $this->getCriteria();
   }
 
   function assignFilter(&$form,$tplname,$group) {
@@ -23,10 +24,18 @@ class CRM_Press_Form_Search_CRM_Muntpunt_PressSearch extends CRM_Contact_Form_Se
     }
     $params = array ("version"=>3,"sequential"=>1,"option_group_id"=>$group_id,"is_active"=>1);
     $result= civicrm_api('OptionValue', 'get',array ("version"=>3,"sequential"=>1,"option_group_id"=>$group_id,"option.limit"=>100));
+    if (!empty($this->$tplname)) {
+      foreach ($result["values"] as &$v) {
+        if (in_array($v["name"],$this->$tplname)) {
+          $v["checked"] = true;
+        } else {    
+          $v["checked"] = false;
+        }
+      }
+    }
     $form->assign($tplname,$result["values"]);
 //it will not be rendered, but useful to get the result
     $form->addElement("text",$tplname,$tplname);
-//    $form->addElement('hidden', "${tplname}[]", "");
 
   }
 
