@@ -1,16 +1,22 @@
-<h2>Filter the journalists</h2>
+<div class="crm-block crm-form-block crm-contact-custom-search-form-block">
+<div class="crm-accordion-wrapper crm-custom_search_form-accordion {if $rows}collapsed{/if}">
+    <div class="crm-accordion-header crm-master-accordion-header">
+      {ts}Edit Search Criteria{/ts}
+    </div><!-- /.crm-accordion-header -->
+    <div class="crm-accordion-body">
+
 <table>
 <tr>
 <td>
 <h3>Functie</h3>
 {foreach from=$functions item=i}
-<br><input type="checkbox" name="functions[{$i.value}]"/>{$i.label}
+<br><label><input type="checkbox" name="functions[{$i.value}]"/>{$i.label}</input></label>
 {/foreach}
 </td>
 <td>
 <h3>Redactie</h3>
 {foreach from=$teams item=i}
-<br><input type="checkbox" name="teams[{$i.value}]"/>{$i.label}
+<br><label><input type="checkbox" name="teams[{$i.value}]"/>{$i.label}</input>
 {/foreach}
 </td>
 </tr>
@@ -21,19 +27,19 @@
 <td>
 <h3>Categorie</h3>
 {foreach from=$categories item=i}
-<br><input type="checkbox" name="categories[{$i.value}]"/>{$i.label}
+<br><label><input type="checkbox" name="categories[{$i.value}]"/>{$i.label}</input>
 {/foreach}
 </td>
 <td>
 <h3>Persoort</h3>
 {foreach from=$types item=i}
-<br><input type="checkbox" name="types[{$i.value}]"/>{$i.label}
+<br><label><input type="checkbox" name="types[{$i.value}]"/>{$i.label}</input>
 {/foreach}
 </td>
 <td>
 <h3>Periodicity</h3>
 {foreach from=$frequencies item=i}
-<br><input type="checkbox" name="frequencies[{$i.value}]"/>{$i.label}
+<br><label><input type="checkbox" name="frequencies[{$i.value}]"/>{$i.label}</input>
 {/foreach}
 </td>
 </tr>
@@ -45,6 +51,7 @@
 </table>
 
 
+</div>
 
 {if $rowsEmpty || $rows}
 <div class="crm-content-block">
@@ -175,4 +182,5 @@ function toggleContactSelection( name, qfKey, selection ){
 
 {/literal}
 
-
+</div>
+</div>

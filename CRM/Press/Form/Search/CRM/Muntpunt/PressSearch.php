@@ -9,6 +9,7 @@ class CRM_Press_Form_Search_CRM_Muntpunt_PressSearch extends CRM_Contact_Form_Se
     $this->column = array('functions'=> "journalist.function_32", 'teams' => "journalist.team_31"
       ,'categories'=>"media.categorie_33",'frequencies'=>"media.periodicitei_29",'types'=>"media.perssoort_14");
     parent::__construct($formValues);
+    $this->formValues = $formValues;
   }
 
   function assignFilter(&$form,$tplname,$group) {
@@ -23,6 +24,8 @@ class CRM_Press_Form_Search_CRM_Muntpunt_PressSearch extends CRM_Contact_Form_Se
     $params = array ("version"=>3,"sequential"=>1,"option_group_id"=>$group_id,"is_active"=>1);
     $result= civicrm_api('OptionValue', 'get',array ("version"=>3,"sequential"=>1,"option_group_id"=>$group_id,"option.limit"=>100));
     $form->assign($tplname,$result["values"]);
+//it will not be rendered, but useful to get the result
+    $form->addElement("text",$tplname,$tplname);
 //    $form->addElement('hidden', "${tplname}[]", "");
 
   }
@@ -74,15 +77,20 @@ class CRM_Press_Form_Search_CRM_Muntpunt_PressSearch extends CRM_Contact_Form_Se
     return $columns;
   }
 
+  function count() {
+    return CRM_Core_DAO::singleValueQuery($this->sql('count(distinct contact_a.id) as total'));
+  }
+
+
   /**
    * Construct a full SQL query which returns one page worth of results
    *
    * @return string, sql
    */
   function all($offset = 0, $rowcount = 0, $sort = NULL, $includeContactIDs = FALSE, $justIDs = FALSE) {
-    // delegate to $this->sql(), $this->select(), $this->from(), $this->where(), etc.
-//die ($this->sql($this->select(), $offset, $rowcount, $sort, $includeContactIDs, NULL));
+//echo ($this->sql($this->select(), $offset, $rowcount, $sort, $includeContactIDs, NULL));
     return $this->sql($this->select(), $offset, $rowcount, $sort, $includeContactIDs, NULL);
+
   }
 
   /**
@@ -126,8 +134,9 @@ class CRM_Press_Form_Search_CRM_Muntpunt_PressSearch extends CRM_Contact_Form_Se
 
   function getCriteria() {
     foreach ($this->criteria as $key) {
-      $this->$key= array_keys($_POST[$key]);
-    //mysql_real_escape_string($this->$key);
+//print_r($_POST);
+print_r($this>formValues);
+      $this->$key= array_keys($this->formValues[$key]);
     } 
   }
   /**
@@ -154,7 +163,7 @@ class CRM_Press_Form_Search_CRM_Muntpunt_PressSearch extends CRM_Contact_Form_Se
       $clause[] = " ( ". implode(" OR ",$t ). " ) ";
       $params[$count] = array($this->$section, 'String');
       $count++;
-  }
+    }
 
 /*
       $params[$count] = array($name, 'String');
