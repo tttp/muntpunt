@@ -134,8 +134,6 @@ class CRM_Press_Form_Search_CRM_Muntpunt_PressSearch extends CRM_Contact_Form_Se
 
   function getCriteria() {
     foreach ($this->criteria as $key) {
-//print_r($_POST);
-print_r($this>formValues);
       $this->$key= array_keys($this->formValues[$key]);
     } 
   }
