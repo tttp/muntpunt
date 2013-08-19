@@ -16,7 +16,7 @@
 <td>
 <h3>Redactie</h3>
 {foreach from=$teams item=i}
-<br><label><input type="checkbox" name="teams[{$i.value}]" {if $i.checked}checked="checked"{/if}/>{$i.label}</input>
+<br><label><input type="checkbox" name="teams[{$i.value}]" {if $i.checked}checked="checked"{/if}/>{$i.label}</input></label>
 {/foreach}
 </td>
 </tr>
@@ -27,19 +27,19 @@
 <td>
 <h3>Categorie</h3>
 {foreach from=$categories item=i}
-<br><label><input type="checkbox" name="categories[{$i.value}]" {if $i.checked}checked="checked"{/if}/>{$i.label}</input>
+<br><label><input type="checkbox" name="categories[{$i.value}]" {if $i.checked}checked="checked"{/if}/>{$i.label}</input></label>
 {/foreach}
 </td>
 <td>
 <h3>Persoort</h3>
 {foreach from=$types item=i}
-<br><label><input type="checkbox" name="types[{$i.value}]" {if $i.checked}checked="checked"{/if}/>{$i.label}</input>
+<br><label><input type="checkbox" name="types[{$i.value}]" {if $i.checked}checked="checked"{/if}/>{$i.label}</input></label>
 {/foreach}
 </td>
 <td>
 <h3>Periodicity</h3>
 {foreach from=$frequencies item=i}
-<br><label><input type="checkbox" name="frequencies[{$i.value}]" {if $i.checked}checked="checked"{/if}/>{$i.label}</input>
+<br><label><input type="checkbox" name="frequencies[{$i.value}]" {if $i.checked}checked="checked"{/if}/>{$i.label}</input></label>
 {/foreach}
 </td>
 </tr>
