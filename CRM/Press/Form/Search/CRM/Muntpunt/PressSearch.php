@@ -37,6 +37,12 @@ class CRM_Press_Form_Search_CRM_Muntpunt_PressSearch extends CRM_Contact_Form_Se
 
   }
 
+  function assignLanguageFilter (&$form) {
+    $langs=CRM_Contact_BAO_Contact::buildOptions('preferred_language');
+    $form->assign ("languages",$langs);
+    $form->addElement("text","languages","languages");
+  }
+
   /**
    * Prepare a set of search fields
    *
@@ -45,6 +51,8 @@ class CRM_Press_Form_Search_CRM_Muntpunt_PressSearch extends CRM_Contact_Form_Se
    */
   function buildForm(&$form) {
     CRM_Utils_System::setTitle(ts('Search for journalists'));
+
+    $this->assignLanguageFilter($form);
     $this->assignFilter($form,"functions","function");
     $this->assignFilter($form,"teams","team");
     $this->assignFilter($form,"categories","Categorie");
@@ -151,10 +159,16 @@ class CRM_Press_Form_Search_CRM_Muntpunt_PressSearch extends CRM_Contact_Form_Se
    */
   function where($includeContactIDs = FALSE) {
     $this->getCriteria();
+
     $params = array();
     $where = "contact_a.contact_type  = 'Individual'";
-    $where = "contact_a.contact_sub_type like '%Pers_Medewerker%'";
+    $where .= " AND contact_a.contact_sub_type like '%Pers_Medewerker%'";
 
+//preferred_language
+    if (array_key_exists ("languages",$this->formValues)) {
+      $lang = implode ("','",array_keys($this->formValues["languages"]));
+      $where .= " AND contact_a.preferred_language IN ('$lang')";
+    }
     $count  = 1;
     $clause = array();
 

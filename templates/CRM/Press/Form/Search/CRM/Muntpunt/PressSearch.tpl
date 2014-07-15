@@ -19,6 +19,12 @@
 <br><label><input type="checkbox" name="teams[{$i.value}]" {if $i.checked}checked="checked"{/if}/>{$i.label}</input></label>
 {/foreach}
 </td>
+<td>
+<h3>Taal</h3>
+{foreach from=$languages item=i key=k}
+<br><label><input type="checkbox" name="languages[{$k}]" {if $i.checked}checked="checked"{/if}/>{$i}</input></label>
+{/foreach}
+</td>
 </tr>
 </table>
 <h2>Filter the Media</h2>
