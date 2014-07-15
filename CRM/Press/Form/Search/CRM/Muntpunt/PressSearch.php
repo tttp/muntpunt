@@ -14,16 +14,14 @@ class CRM_Press_Form_Search_CRM_Muntpunt_PressSearch extends CRM_Contact_Form_Se
   }
 
   function assignFilter(&$form,$tplname,$group) {
-    $result = civicrm_api('CustomField', 'getsingle', array('version' => 3,'name' =>$group));
-    if($result["is_error"])
-      die ("$group". $result["error_message"]);
+    $result = civicrm_api3('CustomField', 'getsingle', array('version' => 3,'name' =>$group));
 
     $group_id=$result["option_group_id"];
     if (!$group_id) {
       die ("can't find options for field $group");
     }
     $params = array ("version"=>3,"sequential"=>1,"option_group_id"=>$group_id,"is_active"=>1);
-    $result= civicrm_api('OptionValue', 'get',array ("version"=>3,"sequential"=>1,"option_group_id"=>$group_id,"option.limit"=>100));
+    $result= civicrm_api3('OptionValue', 'get',array ("version"=>3,"sequential"=>1,"option_group_id"=>$group_id,"option.limit"=>100));
     if (!empty($this->$tplname)) {
       foreach ($result["values"] as &$v) {
         if (in_array($v["name"],$this->$tplname)) {

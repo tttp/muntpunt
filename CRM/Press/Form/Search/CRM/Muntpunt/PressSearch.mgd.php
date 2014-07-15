@@ -12,7 +12,7 @@ return array (
     array (
       'version' => 3,
       'label' => 'CRM_Muntpunt_PressSearch',
-      'description' => 'use custom fields to filter the contacts',
+      'description' => 'Search for muntpunt pressgroup',
       'class_name' => 'CRM_Press_Form_Search_CRM_Muntpunt_PressSearch',
     ),
   ),
